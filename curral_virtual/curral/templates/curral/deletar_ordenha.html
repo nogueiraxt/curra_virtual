@@ -1,0 +1,12 @@
+{% extends "curral/base.html" %}
+
+{% block content %}
+    <h2>{{ titulo_pagina }}</h2>
+    <p>Você tem certeza que deseja excluir a ordenha de {{ ordenha.quantidade_leite|floatformat:2 }} litros da vaca **{{ ordenha.vaca.nome }}**? Esta ação não pode ser desfeita.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmar Exclusão</button>
+        <a href="{% url 'detalhe_vaca' ordenha.vaca.pk %}">Cancelar</a>
+    </form>
+{% endblock %}
