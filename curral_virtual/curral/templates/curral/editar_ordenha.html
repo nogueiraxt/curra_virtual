@@ -1,0 +1,13 @@
+{% extends "curral/base.html" %}
+
+{% block content %}
+    <h2>{{ titulo_pagina }}</h2>
+    <p>Para a vaca **{{ ordenha.vaca.nome }}**</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar Alterações</button>
+        <a href="{% url 'detalhe_vaca' ordenha.vaca.pk %}" class="button">Cancelar</a>
+    </form>
+{% endblock %}  

@@ -1,0 +1,37 @@
+{% extends "curral/base.html" %}
+
+{% block content %}
+    <h2>{{ titulo_pagina }}</h2>
+
+    <form method="get" action="{% url 'relatorio_geral' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Gerar Relatório</button>
+    </form>
+
+    {% if vacas_com_producao %}
+        <hr>
+        <h3>Resultados do Relatório</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome da Vaca</th>
+                    <th>Quantidade Produzida no Período</th>
+                    <th>Média Diária no Período</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vaca in vacas_com_producao %}
+                    <tr>
+                        <td>{{ vaca.nome }}</td>
+                        <td>{{ vaca.producao_total|floatformat:2 }} litros</td>
+                        <td>{{ vaca.media_diaria|floatformat:2 }} litros</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif request.GET %}
+        <p>Nenhuma ordenha encontrada para os filtros selecionados.</p>
+    {% endif %}
+
+{% endblock %}
