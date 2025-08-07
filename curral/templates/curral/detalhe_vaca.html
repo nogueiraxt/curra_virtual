@@ -1,0 +1,47 @@
+{% extends "curral/base.html" %}
+
+{% block content %}
+    <h2>Detalhes da Vaca: {{ vaca.nome }}</h2>
+    <p><strong>ID:</strong> {{ vaca.id }}</p>
+    <p><strong>Data de Nascimento:</strong> {{ vaca.data_nascimento|default:"Não informado" }}</p>
+    <p><strong>Pai:</strong> {{ vaca.pai|default:"Não informado" }}</p>
+    <p><strong>Mãe:</strong> {{ vaca.mae|default:"Não informado" }}</p>
+    <p><strong>Média de Produção Diária:</strong> {{ media_diaria|floatformat:2 }} litros</p>
+    <p><strong>Total de Leite Produzido:</strong> {{ producao_total|floatformat:2 }} litros</p>
+
+    <div style="margin-top: 20px;">
+        <a href="{% url 'cadastrar_ordenha' %}?vaca={{ vaca.id }}" class="button">Lançar Nova Ordenha</a>
+    </div>
+
+    <hr>
+    <h3>Histórico de Ordenhas</h3>
+
+    <form method="get" action="{% url 'detalhe_vaca' vaca.id %}" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        {% csrf_token %}
+        <p style="margin: 0;">{{ filtro_form.data_inicio.label_tag }} {{ filtro_form.data_inicio }}</p>
+        <p style="margin: 0;">{{ filtro_form.data_fim.label_tag }} {{ filtro_form.data_fim }}</p>
+        <button type="submit">Filtrar</button>
+    </form>
+    
+    {% if ordenhas_por_dia %}
+        {% for dia, ordenhas_do_dia in ordenhas_por_dia.items %}
+            <h4>Produção em {{ dia|date:"d/m/Y" }}</h4>
+            <ul>
+                {% for ordenha in ordenhas_do_dia %}
+                    <li style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>{{ ordenha.quantidade_leite|floatformat:2 }} litros às {{ ordenha.data_hora|date:"H:i" }}</span>
+                        <span>
+                            <a href="{% url 'editar_ordenha' ordenha.id %}" class="button">Editar</a>
+                            <form action="{% url 'deletar_ordenha' ordenha.id %}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este lançamento?');" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="button button-delete">Excluir</button>
+                            </form>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>Nenhuma ordenha encontrada para os filtros selecionados.</p>
+    {% endif %}
+{% endblock %}

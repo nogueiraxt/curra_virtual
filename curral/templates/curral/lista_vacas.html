@@ -1,0 +1,17 @@
+{% extends "curral/base.html" %}
+
+{% block content %}
+    <h2>Lista de Vacas</h2>
+    {% if vacas %}
+        <ul>
+            {% for vaca in vacas %}
+                <li>
+                    <a href="{% url 'detalhe_vaca' vaca.id %}">{{ vaca.nome }}</a>
+                    - Média Diária: {{ vaca.media_diaria|floatformat:2 }} litros
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhuma vaca cadastrada ainda.</p>
+    {% endif %}
+{% endblock %}
